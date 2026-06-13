@@ -4,83 +4,118 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 
-<MudGrid Justify="Justify.Center" Style="min-height: 100vh; align-items: center;">
-    <MudItem xs="12" sm="8" md="5">
-        <MudPaper Elevation="4" Style="border-radius: 16px; overflow: hidden;">
-            <MudGrid Spacing="0">
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
 
-                <MudItem xs="12" md="5" Style="background: #3C3489; padding: 2rem;">
-                    <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Style="font-size: 48px; color: #AFA9EC;" />
-                    <MudText Typo="Typo.h6" Style="color: #CECBF6; margin-top: 1rem;">Project Artemis</MudText>
-                    <MudText Typo="Typo.body2" Style="color: #AFA9EC;">
-                        Create your account :)
-                    </MudText>
-                </MudItem>
+    <MudPaper Elevation="0" Style="background: #3C3489; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
+        <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="font-size: 40px; color: #AFA9EC;" />
+        <div>
+            <MudText Typo="Typo.h6" Style="color: #CECBF6; margin: 0;">Project Artemis</MudText>
+            <MudText Typo="Typo.caption" Style="color: #AFA9EC;">Create your account to get started</MudText>
+        </div>
+    </MudPaper>
 
-                <MudItem xs="12" md="7" Style="padding: 2rem;">
-                    <MudText Typo="Typo.h5" GutterBottom>Create account</MudText>
-                    <MudText Typo="Typo.body2" Class="mb-4" Color="Color.Secondary">
-                        Fill in your details to get started.
-                    </MudText>
+    @if (errorMessage is not null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-3">@errorMessage</MudAlert>
+    }
 
-                    @if (errorMessage is not null)
-                    {
-                        <MudAlert Severity="Severity.Error" Class="mb-3">@errorMessage</MudAlert>
-                    }
+    <MudPaper Outlined Class="pa-6 mb-4" Style="border-radius: 12px;">
+        <MudText Typo="Typo.overline" Style="color: #7F77DD;" Class="mb-4 d-flex align-center gap-2">
+            <MudIcon Icon="@Icons.Material.Outlined.Lock" Size="Size.Small" /> Account credentials
+        </MudText>
 
-                    <MudTextField @bind-Value="username"
-                                  Label="Username"
-                                  Variant="Variant.Outlined"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Outlined.Person"
-                                  Class="mb-3" />
+        <MudTextField @bind-Value="username"
+                      Label="Minecraft username"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Outlined.SportsEsports"
+                      Class="mb-3" />
 
-                    <MudTextField @bind-Value="email"
-                                  Label="Email"
-                                  Variant="Variant.Outlined"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Outlined.Email"
-                                  Class="mb-3" />
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="password"
+                              Label="Password"
+                              Variant="Variant.Outlined"
+                              InputType="@passwordInputType"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@passwordIcon"
+                              OnAdornmentClick="TogglePassword" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="confirmPassword"
+                              Label="Confirm password"
+                              Variant="Variant.Outlined"
+                              InputType="@passwordInputType"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@passwordIcon"
+                              OnAdornmentClick="TogglePassword" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 
-                    <MudTextField @bind-Value="password"
-                                  Label="Password"
-                                  Variant="Variant.Outlined"
-                                  InputType="@passwordInputType"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@passwordIcon"
-                                  OnAdornmentClick="TogglePassword"
-                                  Class="mb-3" />
+    <MudPaper Outlined Class="pa-6 mb-4" Style="border-radius: 12px;">
+        <MudText Typo="Typo.overline" Style="color: #7F77DD;" Class="mb-4 d-flex align-center gap-2">
+            <MudIcon Icon="@Icons.Material.Outlined.Person" Size="Size.Small" /> Tell us about you
+        </MudText>
 
-                    <MudTextField @bind-Value="confirmPassword"
-                                  Label="Confirm password"
-                                  Variant="Variant.Outlined"
-                                  InputType="@passwordInputType"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@passwordIcon"
-                                  OnAdornmentClick="TogglePassword"
-                                  Class="mb-4" />
+        <MudTextField @bind-Value="fullName"
+                      Label="Full name"
+                      Variant="Variant.Outlined"
+                      Class="mb-3" />
 
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               FullWidth
-                               OnClick="HandleRegister"
-                               Disabled="loading"
-                               EndIcon="@Icons.Material.Filled.ArrowForward">
-                        @(loading ? "Creating account…" : "Create account")
-                    </MudButton>
+        <MudTextField @bind-Value="facebookUrl"
+                      Label="Facebook profile URL"
+                      Variant="Variant.Outlined"
+                      Placeholder="https://facebook.com/yourprofile"
+                      Class="mb-3" />
 
-                    <MudText Typo="Typo.caption" Class="mt-3 d-flex justify-center" Color="Color.Secondary">
-                        Already have an account? <MudLink Href="/login" Class="ml-1">Sign in</MudLink>
-                    </MudText>
-                </MudItem>
+        <MudSelect @bind-Value="school"
+                   Label="School"
+                   Variant="Variant.Outlined"
+                   Class="mb-3">
+            <MudSelectItem Value="@("University of the Philippines")">University of the Philippines</MudSelectItem>
+            <MudSelectItem Value="@("Ateneo de Manila University")">Ateneo de Manila University</MudSelectItem>
+            <MudSelectItem Value="@("De La Salle University")">De La Salle University</MudSelectItem>
+            <MudSelectItem Value="@("University of Santo Tomas")">University of Santo Tomas</MudSelectItem>
+            <MudSelectItem Value="@("Other")">Other</MudSelectItem>
+        </MudSelect>
 
-            </MudGrid>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+        <MudTextField @bind-Value="messageToAdmin"
+                      Label="Message to admin"
+                      Variant="Variant.Outlined"
+                      Lines="3"
+                      HelperText="Optional — anything you'd like us to know" />
+    </MudPaper>
+
+    <MudAlert Severity="Severity.Info" Icon="@Icons.Material.Outlined.Info" Class="mb-4" Style="border-radius: 12px;">
+        <MudText Typo="Typo.subtitle2" Class="mb-1">Why we collect this info</MudText>
+        <MudText Typo="Typo.caption">
+            Your Minecraft username identifies you in-game. Your full name and school help us verify
+            you're part of the community. Your Facebook URL lets us reach you for announcements.
+            None of your data is sold or shared with third parties — it's only used to manage
+            Project Artemis membership.
+        </MudText>
+    </MudAlert>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               FullWidth
+               Size="Size.Large"
+               OnClick="HandleRegister"
+               Disabled="loading"
+               EndIcon="@Icons.Material.Filled.ArrowForward">
+        @(loading ? "Creating account…" : "Create account")
+    </MudButton>
+
+    <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-3" Color="Color.Secondary">
+        Already have an account? <MudLink Href="/login">Sign in</MudLink>
+    </MudText>
+
+</MudContainer>
 
 @code {
-    string username = "", email = "", password = "", confirmPassword = "";
+    string username = "", password = "", confirmPassword = "";
+    string fullName = "", facebookUrl = "", school = "", messageToAdmin = "";
     bool loading = false;
     bool showPassword = false;
     string? errorMessage;
@@ -107,8 +142,11 @@
         var response = await Http.PostAsJsonAsync("/api/v1/auth/register", new
         {
             username,
-            email,
-            password
+            password,
+            fullName,
+            facebookUrl,
+            school,
+            messageToAdmin
         });
 
         if (response.IsSuccessStatusCode)
