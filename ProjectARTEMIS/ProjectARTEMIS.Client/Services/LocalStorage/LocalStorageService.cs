@@ -1,7 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System.Text.Json;
 
-public class LocalStorageService(IJSRuntime jsRuntime)
+public class LocalStorageService(IJSRuntime jsRuntime) : ILocalStorageService
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Runtime.CompilerServices;
 
 
     public class User
@@ -10,19 +11,24 @@
         {
              
         }
-        
-        public static User Create(string username, string password)
+
+    public static User Create(string username, string password)
+    {
+        if (string.IsNullOrEmpty(username)) throw new DomainException("Invalid username!");
+        if (string.IsNullOrEmpty(password)) throw new DomainException("Invalid password!");
+
+        var user = new User
         {
-            if (string.IsNullOrEmpty(username)) throw new DomainException("Invalid username!");
-            if (string.IsNullOrEmpty(password)) throw new DomainException("Invalid password!");
+            Id = Guid.NewGuid(),
+            Username = username,
+            PasswordHash = password
+        };
 
-            return new User
-            {
-                Id = Guid.NewGuid(),
-                Username = username,
-                PasswordHash = password
-            };
+        return user;
 
-        }
+    }
+
+    
+    
     }
 

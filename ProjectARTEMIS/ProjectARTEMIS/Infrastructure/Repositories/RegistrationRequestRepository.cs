@@ -1,10 +1,10 @@
 ﻿using ProjectARTEMIS.Infrastructure.Persistence;
 
-public interface IRegistrationRequestRepository : IRepository<RegistrationRequest>
+public interface IWhitelistRequestRepository : IRepository<WhitelistRequest>
 {
 }
 
-public class RegistrationRequestRepository : Repository<RegistrationRequest>, IRegistrationRequestRepository
+public class RegistrationRequestRepository : Repository<WhitelistRequest>, IWhitelistRequestRepository
 {
     public RegistrationRequestRepository(MyDbContext context) : base(context)
     {

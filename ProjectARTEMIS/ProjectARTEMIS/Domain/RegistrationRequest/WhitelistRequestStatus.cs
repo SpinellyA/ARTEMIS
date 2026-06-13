@@ -1,6 +1,6 @@
 ﻿using ProjectARTEMIS.Domain.Enums;
 
-    public class RegistrationStatus
+    public class WhitelistRequestStatus
     {
         public Guid Id { get; private set; }
         public Guid RegistrationRequestId { get; private set; }
@@ -12,14 +12,14 @@
         public DateTime StartTime { get; private set; }
         public DateTime? EndTime { get; private set; }
 
-        private RegistrationStatus()
+        private WhitelistRequestStatus()
         {
              
         }
 
-        public static RegistrationStatus Create(Guid regRequestId, RegistrationStatusType status, string? message = null)
+        public static WhitelistRequestStatus Create(Guid regRequestId, RegistrationStatusType status, string? message = null)
         {
-            return new RegistrationStatus
+            return new WhitelistRequestStatus
             {
                 Id = Guid.NewGuid(),
                 RegistrationRequestId = regRequestId,

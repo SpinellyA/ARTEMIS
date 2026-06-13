@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectARTEMIS.Client\ProjectARTEMIS.Client.csproj" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">

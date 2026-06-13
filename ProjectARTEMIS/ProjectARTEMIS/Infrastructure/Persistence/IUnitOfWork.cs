@@ -3,7 +3,7 @@
 public interface IUnitOfWork
 {
     IPlayerProfileRepository PlayerProfiles { get; }
-    IRegistrationRequestRepository RegistrationRequests { get; }
+    IWhitelistRequestRepository WhitelistRequests { get; }
     ISchoolRepository Schools { get; }
     ISocialMediaRepository SocialMedia { get; }
     IUserRepository Users { get; }

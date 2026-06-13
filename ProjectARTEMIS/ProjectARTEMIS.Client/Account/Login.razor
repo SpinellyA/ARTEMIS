@@ -1,0 +1,94 @@
+﻿@page "/login"
+@layout BlankLayout
+@attribute [AllowAnonymous]
+@inject HttpClient Http
+@* @inject JwtAuthStateProvider AuthProvider *@
+@inject NavigationManager Nav
+
+<MudGrid Justify="Justify.Center" Style="min-height: 100vh; align-items: center;">
+    <MudItem xs="12" sm="8" md="5">
+        <MudPaper Elevation="4" Style="border-radius: 16px; overflow: hidden;">
+            <MudGrid Spacing="0">
+
+                <MudItem xs="12" md="5" Style="background: #3C3489; padding: 2rem;">
+                    <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="font-size: 48px; color: #AFA9EC;" />
+                    <MudText Typo="Typo.h6" Style="color: #CECBF6; margin-top: 1rem;">MyApp</MudText>
+                    <MudText Typo="Typo.body2" Style="color: #AFA9EC;">
+                        Secure access to your workspace.
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="12" md="7" Style="padding: 2rem;">
+                    <MudText Typo="Typo.h5" GutterBottom>Welcome back</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4" Color="Color.Secondary">
+                        Sign in to your account
+                    </MudText>
+
+                    <MudTextField @bind-Value="username"
+                                  Label="Username"
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Outlined.Person"
+                                  Class="mb-3" />
+
+                    <MudTextField @bind-Value="password"
+                                  Label="Password"
+                                  Variant="Variant.Outlined"
+                                  InputType="@passwordInputType"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@passwordIcon"
+                                  OnAdornmentClick="TogglePassword"
+                                  Class="mb-1" />
+
+                    <MudLink Href="/forgot-password" Typo="Typo.caption" Class="d-flex justify-end mb-4">
+                        Forgot password?
+                    </MudLink>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               FullWidth
+                               OnClick="HandleLogin"
+                               Disabled="loading"
+                               EndIcon="@Icons.Material.Filled.ArrowForward">
+                        @(loading ? "Signing in…" : "Sign in")
+                    </MudButton>
+                </MudItem>
+
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    string username = "", password = "";
+    bool loading = false;
+    bool showPassword = false;
+
+    InputType passwordInputType => showPassword ? InputType.Text : InputType.Password;
+    string passwordIcon => showPassword
+        ? Icons.Material.Filled.VisibilityOff
+        : Icons.Material.Filled.Visibility;
+
+    void TogglePassword() => showPassword = !showPassword;
+
+    public async Task HandleLogin()
+    {
+        loading = true;
+        var response = await Http.PostAsJsonAsync("/api/auth/login", new { username, password });
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            // await AuthProvider.MarkUserAsAuthenticated(result!.Token);
+            Nav.NavigateTo("/dashboard");
+        }
+        else
+        {
+            // handle error — e.g. show a MudSnackbar
+        }
+
+        loading = false;
+    }
+
+    record LoginResponse(string Token);
+}

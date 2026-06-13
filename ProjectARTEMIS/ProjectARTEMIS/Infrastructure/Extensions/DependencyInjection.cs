@@ -1,5 +1,4 @@
-﻿
-namespace Infrastructure
+﻿namespace ProjectARTEMIS.Infrastructure.Extensions
 {
     public static class DependencyInjection
     {

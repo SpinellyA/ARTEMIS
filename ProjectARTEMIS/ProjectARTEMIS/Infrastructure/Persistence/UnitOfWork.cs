@@ -14,7 +14,7 @@ public sealed class UnitOfWork : IUnitOfWork
     private IUserRepository? _users;
     private ISchoolRepository? _schools;
     private IPlayerProfileRepository? _playerProfiles;
-    private IRegistrationRequestRepository? _registrationRequests;
+    private IWhitelistRequestRepository? _whitelistRequests;
     private ISocialMediaRepository? _socialMedia;
 
     public UnitOfWork(MyDbContext context)
@@ -25,7 +25,7 @@ public sealed class UnitOfWork : IUnitOfWork
     public IUserRepository Users => _users ??= new UserRepository(_context);
     public ISchoolRepository Schools => _schools ??= new SchoolRepository(_context);
     public IPlayerProfileRepository PlayerProfiles => _playerProfiles ??= new PlayerProfileRepository(_context);
-    public IRegistrationRequestRepository RegistrationRequests => _registrationRequests ??= new RegistrationRequestRepository(_context);
+    public IWhitelistRequestRepository WhitelistRequests => _whitelistRequests ??= new RegistrationRequestRepository(_context);
     public ISocialMediaRepository SocialMedia => _socialMedia ??= new SocialMediaRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
