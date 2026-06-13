@@ -8,100 +8,112 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<AuthorizeView>
-    <Authorized>
-        <MudLayout>
-            <MudAppBar Elevation="0" Style="border-bottom: 1px solid #33323e;">
-                <MudText Typo="Typo.subtitle1" Style="font-weight: 500;">
-                    @currentPageTitle
-                </MudText>
-                <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" />
-                <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="DarkModeToggle" />
-            </MudAppBar>
+@if (IsPublicPage)
+{
+    @Body
+}
+else
+{
+    <AuthorizeView>
+        <Authorized>
+            <MudLayout>
+                <MudAppBar Elevation="0" Style="border-bottom: 1px solid #33323e;">
+                    <MudText Typo="Typo.subtitle1" Style="font-weight: 500;">
+                        @currentPageTitle
+                    </MudText>
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" />
+                    <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="DarkModeToggle" />
+                </MudAppBar>
 
-            <MudDrawer Open="true" Variant="DrawerVariant.Persistent" Elevation="0"
-                       Style="border-right: 1px solid #33323e;">
-                <MudDrawerHeader Style="padding: 1rem 1.25rem; border-bottom: 1px solid #33323e;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="color: #AFA9EC;" />
-                        <div>
-                            <MudText Typo="Typo.subtitle2" Style="color: #CECBF6; margin: 0;">Artemis SMP</MudText>
-                            <MudText Typo="Typo.caption" Style="color: #92929f;">Main Panel</MudText>
+                <MudDrawer Open="true" Variant="DrawerVariant.Persistent" Elevation="0"
+                           Style="border-right: 1px solid #33323e;">
+                    <MudDrawerHeader Style="padding: 1rem 1.25rem; border-bottom: 1px solid #33323e;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="color: #AFA9EC;" />
+                            <div>
+                                <MudText Typo="Typo.subtitle2" Style="color: #CECBF6; margin: 0;">Artemis SMP</MudText>
+                                <MudText Typo="Typo.caption" Style="color: #92929f;">Main Panel</MudText>
+                            </div>
                         </div>
+                    </MudDrawerHeader>
+
+                    <MudNavMenu>
+                        <MudText Typo="Typo.overline" Class="px-4 pt-3 pb-1" Style="color: #74718e;">General</MudText>
+                        <MudNavLink Href="/" Icon="@Icons.Material.Outlined.Dashboard" Match="NavLinkMatch.All">
+                            Dashboard
+                        </MudNavLink>
+                        <MudNavLink Href="/profile" Icon="@Icons.Material.Outlined.Person">
+                            My Profile
+                        </MudNavLink>
+                        <MudNavLink Href="/my-requests" Icon="@Icons.Material.Outlined.History">
+                            My Requests
+                        </MudNavLink>
+
+                        <AuthorizeView Roles="Admin" Context="adminContext">
+                            <Authorized>
+                                <MudText Typo="Typo.overline" Class="px-4 pt-3 pb-1" Style="color: #74718e;">Admin</MudText>
+                                <MudNavLink Href="/admin/whitelist-requests" Icon="@Icons.Material.Outlined.ListAlt">
+                                    Whitelist Requests
+                                </MudNavLink>
+                                <MudNavLink Href="/admin/players" Icon="@Icons.Material.Outlined.People">
+                                    Players
+                                </MudNavLink>
+                                <MudNavLink Href="/admin/api-keys" Icon="@Icons.Material.Outlined.Key">
+                                    API Keys
+                                </MudNavLink>
+                            </Authorized>
+                        </AuthorizeView>
+                    </MudNavMenu>
+
+                    <MudSpacer />
+
+                    <div style="padding: 0.75rem 1rem; border-top: 1px solid #33323e; display: flex; align-items: center; gap: 8px;">
+                        <MudAvatar Size="Size.Small" Style="background: #534AB7; color: #CECBF6;">
+                            @GetInitials(_username)
+                        </MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.caption" Style="color: #b2b0bf;">@_username</MudText>
+                            <MudText Typo="Typo.caption" Style="color: #74718e; font-size: 10px;">
+                                @(_isAdmin ? "Administrator" : "Player")
+                            </MudText>
+                        </div>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Logout"
+                                       Size="Size.Small"
+                                       Style="margin-left: auto; color: #74718e;"
+                                       OnClick="Logout" />
                     </div>
-                </MudDrawerHeader>
+                </MudDrawer>
 
-                <MudNavMenu>
-                    <MudText Typo="Typo.overline" Class="px-4 pt-3 pb-1" Style="color: #74718e;">General</MudText>
-                    <MudNavLink Href="/" Icon="@Icons.Material.Outlined.Dashboard" Match="NavLinkMatch.All">
-                        Dashboard
-                    </MudNavLink>
-                    <MudNavLink Href="/profile" Icon="@Icons.Material.Outlined.Person">
-                        My Profile
-                    </MudNavLink>
-                    <MudNavLink Href="/my-requests" Icon="@Icons.Material.Outlined.History">
-                        My Requests
-                    </MudNavLink>
-
-                    <AuthorizeView Roles="Admin" Context="adminContext">
-                        <Authorized>
-                            <MudText Typo="Typo.overline" Class="px-4 pt-3 pb-1" Style="color: #74718e;">Admin</MudText>
-                            <MudNavLink Href="/admin/whitelist-requests" Icon="@Icons.Material.Outlined.ListAlt">
-                                Whitelist Requests
-                            </MudNavLink>
-                            <MudNavLink Href="/admin/players" Icon="@Icons.Material.Outlined.People">
-                                Players
-                            </MudNavLink>
-                            <MudNavLink Href="/admin/api-keys" Icon="@Icons.Material.Outlined.Key">
-                                API Keys
-                            </MudNavLink>
-                        </Authorized>
-                    </AuthorizeView>
-                </MudNavMenu>
-
-                <MudSpacer />
-
-                <div style="padding: 0.75rem 1rem; border-top: 1px solid #33323e; display: flex; align-items: center; gap: 8px;">
-                    <MudAvatar Size="Size.Small" Style="background: #534AB7; color: #CECBF6;">
-                        @GetInitials(_username)
-                    </MudAvatar>
-                    <div>
-                        <MudText Typo="Typo.caption" Style="color: #b2b0bf;">@_username</MudText>
-                        <MudText Typo="Typo.caption" Style="color: #74718e; font-size: 10px;">
-                            @(_isAdmin ? "Administrator" : "Player")
-                        </MudText>
-                    </div>
-                    <MudIconButton Icon="@Icons.Material.Outlined.Logout"
-                                   Size="Size.Small"
-                                   Style="margin-left: auto; color: #74718e;"
-                                   OnClick="Logout" />
-                </div>
-            </MudDrawer>
-
-            <MudMainContent Class="pt-16 pa-4">
-                @Body
-            </MudMainContent>
-        </MudLayout>
-    </Authorized>
-    <NotAuthorized>
-        <RedirectToLogin />
-    </NotAuthorized>
-    <Authorizing>
-        <FullScreenLoading />
-    </Authorizing>
-</AuthorizeView>
+                <MudMainContent Class="pt-16 pa-4">
+                    @Body
+                </MudMainContent>
+            </MudLayout>
+        </Authorized>
+        <NotAuthorized>
+            <RedirectToLogin />
+        </NotAuthorized>
+        <Authorizing>
+            <FullScreenLoading />
+        </Authorizing>
+    </AuthorizeView>
+}
 
 @code {
     private bool _isDarkMode = true;
     private MudTheme? _theme = null;
     private string currentPageTitle = "Dashboard";
-
     private string? _username;
     private bool _isAdmin;
 
+    private bool IsPublicPage =>
+        Nav.Uri.Contains("/login", StringComparison.OrdinalIgnoreCase) ||
+        Nav.Uri.Contains("/register", StringComparison.OrdinalIgnoreCase);
+
     protected override async Task OnInitializedAsync()
     {
+        Nav.LocationChanged += (s, e) => StateHasChanged();
+
         _theme = new()
         {
             PaletteLight = _lightPalette,
@@ -130,7 +142,6 @@
         ? Icons.Material.Rounded.AutoMode
         : Icons.Material.Outlined.DarkMode;
 
-    
     private readonly PaletteLight _lightPalette = new()
     {
         Black = "#110e2d",
@@ -152,54 +163,29 @@
     private readonly PaletteDark _darkPalette = new()
     {
         Primary = "#7e6fff",
-
         Surface = "#1e1e2d",
-
         Background = "#1a1a27",
-
         BackgroundGray = "#151521",
-
         AppbarText = "#92929f",
-
         AppbarBackground = "rgba(26,26,39,0.8)",
-
         DrawerBackground = "#1a1a27",
-
         ActionDefault = "#74718e",
-
         ActionDisabled = "#9999994d",
-
         ActionDisabledBackground = "#605f6d4d",
-
         TextPrimary = "#b2b0bf",
-
         TextSecondary = "#92929f",
-
         TextDisabled = "#ffffff33",
-
         DrawerIcon = "#92929f",
-
         DrawerText = "#92929f",
-
         GrayLight = "#2a2833",
-
         GrayLighter = "#1e1e2d",
-
         Info = "#4a86ff",
-
         Success = "#3dcb6c",
-
         Warning = "#ffb545",
-
         Error = "#ff3f5f",
-
         LinesDefault = "#33323e",
-
         TableLines = "#33323e",
-
         Divider = "#292838",
-
         OverlayLight = "#1e1e2d80",
     };
-
 }

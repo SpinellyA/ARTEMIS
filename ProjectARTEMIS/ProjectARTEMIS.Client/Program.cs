@@ -23,3 +23,8 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
 await builder.Build()
     .RunAsync();
 
+var host = builder.Build();
+
+await host.Services.GetRequiredService<JwtAuthStateProvider>().InitializeAsync();
+
+await host.RunAsync();

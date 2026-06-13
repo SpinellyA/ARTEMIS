@@ -34,6 +34,9 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
     public async Task MarkUserAsAuthenticated(string token)
     {
         await _localStorage.SetRawAsync("token", token);
+
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
         var claims = ParseClaimsFromJwt(token);
         var identity = new ClaimsIdentity(claims, "jwt");
         var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
@@ -44,8 +47,26 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
     public async Task MarkUserAsLoggedOut()
     {
         await _localStorage.RemoveAsync("token");
+
+        _http.DefaultRequestHeaders.Authorization = null;
+
         NotifyAuthenticationStateChanged(
             Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()))));
+    }
+
+    public async Task InitializeAsync()
+    {
+        Console.WriteLine("[JWT] InitializeAsync called");
+        var token = await _localStorage.GetRawAsync("token");
+        Console.WriteLine($"[JWT] InitializeAsync token: {(string.IsNullOrWhiteSpace(token) ? "NULL" : "EXISTS")}");
+
+        if (string.IsNullOrWhiteSpace(token))
+            return;
+
+        var claims = ParseClaimsFromJwt(token);
+        var identity = new ClaimsIdentity(claims, "jwt");
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity))));
     }
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string token)

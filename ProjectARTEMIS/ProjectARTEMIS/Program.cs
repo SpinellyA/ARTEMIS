@@ -50,6 +50,7 @@ builder.Services.AddApplication()
     .AddInfrastructure();
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 builder.Services.AddScoped<JwtAuthStateProvider>();
+
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     sp.GetRequiredService<JwtAuthStateProvider>());
 
