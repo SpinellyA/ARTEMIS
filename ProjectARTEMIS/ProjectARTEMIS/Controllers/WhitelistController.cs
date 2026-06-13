@@ -6,7 +6,7 @@ namespace YourProject.Controllers
 {
     [ApiController]
     [Route("api/v1/whitelists")]
-    [Authorize(Roles = "Admin")] // Restricts all endpoints in this controller to Admin role
+    [Authorize(Roles = "Admin")]
     public class WhitelistController : ControllerBase
     {
         private readonly WhitelistRequestService _requestService;
@@ -36,7 +36,7 @@ namespace YourProject.Controllers
         }
 
         [HttpPost("request")]
-        [AllowAnonymous] // Allows non-admins/guests to submit requests
+        [AllowAnonymous]
         public async Task<IActionResult> CreateRequest([FromBody] RequestWhitelistDto dto)
         {
             await _requestService.RequestWhitelistAsync(dto);
@@ -71,28 +71,4 @@ namespace YourProject.Controllers
             }
         }
     }
-}
-
-public record RequestWhitelistDto
-{
-    public Guid UserId { get; set; }
-    public string RealName { get; set; } = string.Empty;
-    public Guid SchoolId { get; set; }
-    public string FacebookUrl { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
-}
-
-public class WhitelistApplicationDto
-{
-    public Guid Id { get; set; }
-    public string Username { get; set; } = string.Empty;
-    public string RealName { get; set; } = string.Empty;
-    public string School { get; set; } = string.Empty;
-    public string FacebookUrl { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
-}
-
-public record AcceptWhitelistRequestDto
-{
-    public Guid WhitelistRequestId { get; set; }
 }

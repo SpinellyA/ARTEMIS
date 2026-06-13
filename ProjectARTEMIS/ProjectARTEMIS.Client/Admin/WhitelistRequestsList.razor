@@ -1,0 +1,102 @@
+﻿@page "/admin/whitelist-requests"
+@attribute [Authorize(Roles = "Admin")]
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<PageTitle>Whitelist Requests</PageTitle>
+<div style="padding-top: 4px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <MudText Typo="Typo.h5" Style="color: #CECBF6;">Whitelist Requests</MudText>
+
+    <MudButtonGroup Variant="Variant.Outlined" Size="Size.Small">
+        <MudButton OnClick='() => SetFilter("All")' 
+                   Style="@TabStyle("All")">All</MudButton>
+        <MudButton OnClick='() => SetFilter("Pending")'
+                   Style="@TabStyle("Pending")">
+            Pending
+            @if (PendingCount > 0)
+            {
+                <MudChip T="string" Size="Size.Small" Style="background:#33290a; color:#ffb545; margin-left:4px; height:18px;">@PendingCount</MudChip>
+            }
+        </MudButton>
+        <MudButton OnClick='() => SetFilter("Approved")'
+                   Style="@TabStyle("Approved")">Approved</MudButton>
+        <MudButton OnClick='() => SetFilter("Rejected")'
+                   Style="@TabStyle("Rejected")">Rejected</MudButton>
+    </MudButtonGroup>
+</div>
+
+@if (requests is null)
+{
+    <MudSkeleton Height="400px" Style="border-radius: 12px;" />
+}
+else
+{
+    <MudPaper Outlined Style="border-radius: 12px; overflow: hidden;">
+        <MudTable Items="@FilteredRequests" T="WhitelistApplicationDto" Hover Breakpoint="Breakpoint.Sm"
+                  Style="background: transparent;"
+                  OnRowClick="@((TableRowClickEventArgs<WhitelistApplicationDto> row) => Nav.NavigateTo($"/admin/whitelist-requests/{row.Item.Id}"))">
+            <HeaderContent>
+                <MudTh>Username</MudTh>
+                <MudTh>Real name</MudTh>
+                <MudTh>School</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Username">
+                    <MudText Typo="Typo.body2" Style="color: #b2b0bf;">@context.Username</MudText>
+                </MudTd>
+                <MudTd DataLabel="Real name">
+                    <MudText Typo="Typo.body2" Style="color: #b2b0bf;">@context.RealName</MudText>
+                </MudTd>
+                <MudTd DataLabel="School">
+                    <MudText Typo="Typo.body2" Style="color: #74718e;">@context.School</MudText>
+                </MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small" Style="@GetPillStyle(context.Status)">@context.Status</MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small"
+                               Style="color: #7e6fff; border-color: #534AB7; font-size: 12px;"
+                               Href="@($"/admin/whitelist-requests/{context.Id}")">
+                        View →
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText Typo="Typo.body2" Style="color: #74718e; padding: 2rem; text-align: center;">
+                    No requests found.
+                </MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </MudPaper>
+
+}
+
+@code {
+    private List<WhitelistApplicationDto>? requests;
+    private string activeFilter = "All";
+
+    private int PendingCount => requests?.Count(r => r.Status == "Pending") ?? 0;
+
+    private IEnumerable<WhitelistApplicationDto> FilteredRequests =>
+        activeFilter == "All" ? requests! : requests!.Where(r => r.Status == activeFilter);
+
+    protected override async Task OnInitializedAsync()
+    {
+        requests = await Http.GetFromJsonAsync<List<WhitelistApplicationDto>>("/api/v1/whitelists");
+    }
+
+    private void SetFilter(string filter) => activeFilter = filter;
+
+    private string TabStyle(string tab) =>
+        activeFilter == tab ? "background: #2a2840; color: #CECBF6;" : "color: #74718e;";
+
+    private string GetPillStyle(string status) => status switch
+    {
+        "Approved" => "background: #0d2e1a; color: #3dcb6c;",
+        "Pending"  => "background: #33290a; color: #ffb545;",
+        "Rejected" => "background: #2e0d0d; color: #ff3f5f;",
+        _ => ""
+    };
+}

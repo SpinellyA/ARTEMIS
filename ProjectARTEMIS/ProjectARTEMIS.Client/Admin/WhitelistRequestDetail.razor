@@ -1,0 +1,173 @@
+﻿@page "/admin/whitelist-requests/{Id:guid}"
+@attribute [Authorize(Roles = "Admin")]
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<PageTitle>Whitelist Request</PageTitle>
+
+@if (request is null)
+{
+    <MudSkeleton Height="400px" Style="border-radius: 12px;" />
+}
+else
+{
+    <MudButton StartIcon="@Icons.Material.Outlined.ArrowBack"
+               Variant="Variant.Text"
+               Style="color: #7e6fff; margin-bottom: 16px;"
+               Href="/admin/whitelist-requests">
+        Back to list
+    </MudButton>
+
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="8">
+            <MudPaper Outlined Style="border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+                <div style="padding: 0.875rem 1.25rem; border-bottom: 0.5px solid #33323e;">
+                    <MudText Typo="Typo.overline" Style="color: #74718e;">Applicant details</MudText>
+                </div>
+                <div style="padding: 1.25rem;">
+                    @foreach (var field in DetailFields)
+                    {
+                        <div style="margin-bottom: 14px;">
+                            <MudText Typo="Typo.overline" Style="color: #74718e; font-size: 10px;">@field.Label</MudText>
+                            @if (field.IsLink)
+                            {
+                                <MudLink Href="@field.Value" Target="_blank" Style="color: #7e6fff; font-size: 14px;">
+                                    @field.Value
+                                </MudLink>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body1" Style="color: #b2b0bf;">@field.Value</MudText>
+                            }
+                        </div>
+                    }
+                </div>
+            </MudPaper>
+
+            @if (!string.IsNullOrWhiteSpace(request.Message))
+            {
+                <MudPaper Outlined Style="border-radius: 12px; overflow: hidden;">
+                    <div style="padding: 0.875rem 1.25rem; border-bottom: 0.5px solid #33323e;">
+                        <MudText Typo="Typo.overline" Style="color: #74718e;">Message to admin</MudText>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <div style="border-left: 3px solid #534AB7; padding-left: 12px; font-size: 13px; color: #92929f; line-height: 1.6;">
+                            @request.Message
+                        </div>
+                    </div>
+                </MudPaper>
+            }
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Outlined Style="border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+                <div style="padding: 0.875rem 1.25rem; border-bottom: 0.5px solid #33323e;">
+                    <MudText Typo="Typo.overline" Style="color: #74718e;">Actions</MudText>
+                </div>
+                <div style="padding: 1.25rem;">
+                    @if (request.Status == "Pending")
+                    {
+                        <MudButton FullWidth Variant="Variant.Outlined"
+                                   Style="background: #0d2e1a; color: #3dcb6c; border-color: #1a5c35; margin-bottom: 8px;"
+                                   StartIcon="@Icons.Material.Outlined.Check"
+                                   OnClick="ApproveRequest"
+                                   Disabled="loading">
+                            Approve
+                        </MudButton>
+                        <MudButton FullWidth Variant="Variant.Outlined"
+                                   Style="background: #2e0d0d; color: #ff3f5f; border-color: #5c1a1a;"
+                                   StartIcon="@Icons.Material.Outlined.Close"
+                                   OnClick="RejectRequest"
+                                   Disabled="loading">
+                            Reject
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="@(request.Status == "Approved" ? Severity.Success : Severity.Error)">
+                            This request has been @request.Status.ToLower().
+                        </MudAlert>
+                    }
+                </div>
+            </MudPaper>
+
+            <MudPaper Outlined Style="border-radius: 12px; overflow: hidden;">
+                <div style="padding: 0.875rem 1.25rem; border-bottom: 0.5px solid #33323e;">
+                    <MudText Typo="Typo.overline" Style="color: #74718e;">Request info</MudText>
+                </div>
+                <div style="padding: 0.5rem 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid #292838;">
+                        <MudText Typo="Typo.caption" Style="color: #74718e;">Status</MudText>
+                        <MudText Typo="Typo.caption" Style="@($"color: {GetStatusColor(request.Status)}; font-weight: 500;")">
+                            @request.Status
+                        </MudText>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 7px 0;">
+                        <MudText Typo="Typo.caption" Style="color: #74718e;">Request ID</MudText>
+                        <MudText Typo="Typo.caption" Style="color: #b2b0bf; font-family: monospace; font-size: 10px;">
+                            @Id.ToString()[..8]...
+                        </MudText>
+                    </div>
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private WhitelistApplicationDto? request;
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        request = await Http.GetFromJsonAsync<WhitelistApplicationDto>($"/api/v1/whitelists/{Id}");
+    }
+
+    private async Task ApproveRequest()
+    {
+        loading = true;
+        var response = await Http.PostAsJsonAsync("/api/v1/whitelists/accept", new { WhitelistRequestId = Id });
+        if (response.IsSuccessStatusCode)
+        {
+            request = request! with { Status = "Approved" };
+            Snackbar.Add("Request approved!", Severity.Success);
+        }
+        else Snackbar.Add("Something went wrong.", Severity.Error);
+        loading = false;
+    }
+
+    private async Task RejectRequest()
+    {
+        loading = true;
+        var response = await Http.PostAsJsonAsync("/api/v1/whitelists/reject", new { WhitelistRequestId = Id });
+        if (response.IsSuccessStatusCode)
+        {
+            request = request! with { Status = "Rejected" };
+            Snackbar.Add("Request rejected.", Severity.Warning);
+        }
+        else Snackbar.Add("Something went wrong.", Severity.Error);
+        loading = false;
+    }
+
+    private IEnumerable<(string Label, string Value, bool IsLink)> DetailFields => request is null ? [] :
+    [
+        ("Username", request.Username, false),
+        ("Real name", request.RealName, false),
+        ("School", request.School, false),
+        ("Facebook", request.FacebookUrl, true),
+    ];
+
+    private string GetStatusColor(string status) => status switch
+    {
+        "Approved" => "#3dcb6c",
+        "Pending" => "#ffb545",
+        "Rejected" => "#ff3f5f",
+        _ => "#74718e"
+    };
+
+    private record WhitelistApplicationDto(Guid Id, string Username, string RealName,
+        string School, string FacebookUrl, string Message, string Status);
+}

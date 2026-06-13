@@ -9,6 +9,7 @@
         public string InGameName { get; private set; } = string.Empty;
         public string? Bio { get; private set; }
         public string Note { get; private set; } = string.Empty;
+        public string ProfilePicturePath { get; private set; } = string.Empty;
 
         private readonly List<PlayerProfileStatus> _profileStatuses = new();
 
@@ -17,8 +18,12 @@
         public IReadOnlyCollection<SocialMediaHandle> LinkedSocials => _socials.AsReadOnly();
         public IReadOnlyCollection<PlayerProfileStatus> ProfileStatuses => _profileStatuses.AsReadOnly();
         public IReadOnlyCollection<PlayerOnlineStatus> OnlineStatuses => _onlineStatuses.AsReadOnly();
+    public PlayerProfileStatus? CurrentProfileStatus =>
+        _profileStatuses.FirstOrDefault(x => x.EndTime == null);
+    public PlayerOnlineStatus? CurrentOnlineStatus =>
+        _onlineStatuses.FirstOrDefault(x => x.EndTime == null);
 
-        private PlayerProfile() { }
+    private PlayerProfile() { }
 
         public static PlayerProfile Create(Guid userId, Guid schoolId, string inGameName, string? bio = null)
         {
@@ -38,6 +43,8 @@
             profile.InitializeDefaultStatuses();
             return profile;
         }
+
+    public void ChangeProfilePicture(string newPath) => ProfilePicturePath = newPath;
 
         public void AddSocialLink(Guid socialMediaId, string link)
         {

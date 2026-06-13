@@ -46,6 +46,7 @@ public class WhitelistRequestService
                     RealName = r.RealName,
                     School = s.Name,
                     Username = u.Username,
+                    Status = r.CurrentStatus.Status.ToString()
                 }).ToListAsync();
     }
     public async Task<WhitelistApplicationDto> GetByIdAsync(Guid id)

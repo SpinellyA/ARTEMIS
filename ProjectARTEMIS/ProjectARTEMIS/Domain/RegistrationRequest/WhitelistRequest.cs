@@ -17,7 +17,8 @@
 
         private List<WhitelistRequestStatus> _statuses = new();
         public IReadOnlyCollection<WhitelistRequestStatus> Statuses => _statuses.AsReadOnly();
-
+        
+        public WhitelistRequestStatus? CurrentStatus => _statuses.FirstOrDefault(x=>x.EndTime == null);
 
         public static WhitelistRequest Create(Guid userId, Guid schoolId, string realName, string socialUrl, string message)
         {

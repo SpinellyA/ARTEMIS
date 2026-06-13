@@ -7,6 +7,8 @@ namespace ApplicationLayer {
             services.AddScoped<WhitelistRequestService>();
             services.AddScoped<UserService>();
             services.AddScoped<SchoolService>();
+            services.AddScoped<PlayerProfileService>();
+
             services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
             return services;
         }

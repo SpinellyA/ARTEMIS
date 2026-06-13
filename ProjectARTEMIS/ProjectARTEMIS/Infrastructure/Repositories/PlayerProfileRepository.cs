@@ -2,6 +2,7 @@
 
 public interface IPlayerProfileRepository : IRepository<PlayerProfile>
 {
+    Task<PlayerProfile?> GetByUserId(Guid userId);
 }
 
 public class PlayerProfileRepository : Repository<PlayerProfile>, IPlayerProfileRepository
@@ -9,4 +10,5 @@ public class PlayerProfileRepository : Repository<PlayerProfile>, IPlayerProfile
     public PlayerProfileRepository(MyDbContext context) : base(context)
     {
     }
+    public async Task<PlayerProfile?> GetByUserId(Guid userId) => _set.FirstOrDefault(x => x.UserId == userId);
 }
