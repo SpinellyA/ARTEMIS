@@ -7,41 +7,57 @@ public class UserService
 {
     private readonly IUnitOfWork _uow;
     private readonly IPasswordHasher _hasher;
-    public UserService(IUnitOfWork uow, IPasswordHasher hasher)
+    private readonly IJwtTokenGenerator _tokenGenerator;
+    public UserService(IUnitOfWork uow, IPasswordHasher hasher, IJwtTokenGenerator tokenGenerator)
     {
         _uow = uow;
         _hasher = hasher;
+        _tokenGenerator = tokenGenerator;
     }
 
-    public async Task RegisterAsync(RegisterRequest request)
+    public async Task<LoginDto> RegisterAsync(RegisterRequest request)
     {
-        bool isUsernameExisting = await _uow.Users.GetAll().AnyAsync(x => x.Username == request.Username);
+        var existingUser = await _uow.Users.GetByUsernameAsync(request.Username);
 
-        if (isUsernameExisting)
-            throw new ApplicationException("This user already exists!");
+        if (existingUser != null)
+            throw new ApplicationException("This username is already taken!");
 
         var hashedPassword = _hasher.HashPassword(request.Password);
         var user = User.Create(request.Username, hashedPassword);
 
         _uow.Users.Add(user);
+
+        var whitelistRequest = WhitelistRequest.Create(user.Id, request.SchoolId, request.FullName,
+            request.FacebookUrl, request.MessageToAdmin);
+
+        _uow.WhitelistRequests.Add(whitelistRequest);
+
         await _uow.SaveChangesAsync();
+
+        var token = _tokenGenerator.GenerateToken(user);
+
+
+
+        return new LoginDto
+        {
+            Token = token
+        };
     }
 
-    public async Task LoginAsync(LoginRequest request)
+    public async Task<LoginDto> LoginAsync(LoginRequest request)
     {
+        var user = await _uow.Users.GetByUsernameAsync(request.Username);
+        if (user == null) throw new ApplicationException("User doesn't exist!");
 
+        bool isPasswordSuccess = _hasher.VerifyPassword(request.Password, user.PasswordHash);
+
+        if (!isPasswordSuccess) throw new ApplicationException("Bad password!");
+
+        var token = _tokenGenerator.GenerateToken(user);
+
+        return new LoginDto
+        {
+            Token = token
+        };
     }
-}
-
-public record RegisterRequest
-{
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string FacebookUrl { get; set; } = string.Empty;
-    public Guid SchoolId { get; set; }
-}
-
-public record LoginRequest
-{
-
 }

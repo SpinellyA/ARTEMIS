@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="ProjectARTEMIS/ProjectARTEMIS.Client/ProjectARTEMIS.Client.csproj" />
   <Project Path="ProjectARTEMIS/ProjectARTEMIS/ProjectARTEMIS.csproj" />
+  <Project Path="Shared/Shared.csproj" Id="127fd2ff-8189-466b-a5a7-8831b5f6b2f6" />
 </Solution>

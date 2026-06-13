@@ -88,12 +88,41 @@
     </MudPaper>
 
     <MudAlert Severity="Severity.Info" Icon="@Icons.Material.Outlined.Info" Class="mb-4" Style="border-radius: 12px;">
-        <MudText Typo="Typo.subtitle2" Class="mb-1">Why we collect this info</MudText>
-        <MudText Typo="Typo.caption">
-            Your Minecraft username identifies you in-game. Your full name and school help us verify
-            you're part of the community. Your Facebook URL lets us reach you for announcements.
-            None of your data is sold or shared with third parties — it's only used to manage
-            Project Artemis membership.
+        <MudText Typo="Typo.subtitle2" Class="mb-2"><b>Why we collect this info</b></MudText>
+    
+        <MudText Typo="Typo.body2" Class="mb-3">
+            Artemis aims to connect students all over Cebu through Minecraft. By joining this server, we hope that you agree to have your
+            profile and socials be accessible to ONLY players of the server.
+            <br/>
+            This also prevents any griefing, disruprive behavior in the server. Everyone knows who you are in there.
+        </MudText>
+
+        <MudDivider Light="true" Class="my-2" />
+
+        <MudGrid Spacing="2" Class="mt-1">
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.caption" Color="Color.Primary"><b>What if I sell your data?</b></MudText>
+                <MudText Typo="Typo.caption" Component="p">
+                    Okay, there's only going to be like 20-40 of you guys here. I don't really see anybody buying data
+                    of "cebu students playing minecraft".
+                    <br/>
+                    On top of that, we only collect data that you CHOOSE to make public.
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.caption" Color="Color.Primary"><b>What about the passwords?</b></MudText>
+                <MudText Typo="Typo.caption" Component="p">
+                    If you're worried about that, you're open to use a password that you dont usually use. Moreover, we dont store your passwords
+                    as plain text. This means we actually have no way of knowing what your passwords are.
+                    Your passwords are stored in a secure database as BCrypt hashes.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudText Typo="Typo.caption" Class="d-block mt-3">
+            This website is open-source, see the repository here:
+            <MudLink Href="https://github.com/SpinellyA/Artemis" Target="_blank" Underline="Underline.Always" Color="Color.Info"><b>github.com/SpinellyA/Artemis</b></MudLink>
         </MudText>
     </MudAlert>
 
@@ -127,7 +156,7 @@
 
     void TogglePassword() => showPassword = !showPassword;
 
-    async Task HandleRegister()
+    public async Task HandleRegister()
     {
         errorMessage = null;
 

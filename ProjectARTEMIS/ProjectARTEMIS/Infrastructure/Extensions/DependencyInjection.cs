@@ -1,4 +1,6 @@
-﻿namespace ProjectARTEMIS.Infrastructure.Extensions
+﻿using Infrastructure.Authentication;
+
+namespace ProjectARTEMIS.Infrastructure.Extensions
 {
     public static class DependencyInjection
     {
@@ -10,6 +12,8 @@
             services.AddScoped<ISocialMediaRepository, SocialMediaRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
             return services;
         }
     }

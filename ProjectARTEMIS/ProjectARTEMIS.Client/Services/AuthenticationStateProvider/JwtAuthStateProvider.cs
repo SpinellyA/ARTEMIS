@@ -6,10 +6,10 @@ using System.Text.Json;
 
 public class JwtAuthStateProvider : AuthenticationStateProvider
 {
-    private readonly LocalStorageService _localStorage;
+    private readonly ILocalStorageService _localStorage;
     private readonly HttpClient _http;
 
-    public JwtAuthStateProvider(LocalStorageService localStorage, HttpClient http)
+    public JwtAuthStateProvider(ILocalStorageService localStorage, HttpClient http)
     {
         _localStorage = localStorage;
         _http = http;
