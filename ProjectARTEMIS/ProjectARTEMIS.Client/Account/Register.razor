@@ -69,15 +69,14 @@
                       Placeholder="https://facebook.com/yourprofile"
                       Class="mb-3" />
 
-        <MudSelect @bind-Value="school"
+        <MudSelect @bind-Value="schoolId"
                    Label="School"
                    Variant="Variant.Outlined"
                    Class="mb-3">
-            <MudSelectItem Value="@("University of the Philippines")">University of the Philippines</MudSelectItem>
-            <MudSelectItem Value="@("Ateneo de Manila University")">Ateneo de Manila University</MudSelectItem>
-            <MudSelectItem Value="@("De La Salle University")">De La Salle University</MudSelectItem>
-            <MudSelectItem Value="@("University of Santo Tomas")">University of Santo Tomas</MudSelectItem>
-            <MudSelectItem Value="@("Other")">Other</MudSelectItem>
+            @foreach (var c in Schools)
+            {
+                <MudSelectItem Value="c.Id">@c.Name</MudSelectItem>
+            }
         </MudSelect>
 
         <MudTextField @bind-Value="messageToAdmin"
@@ -144,10 +143,12 @@
 
 @code {
     string username = "", password = "", confirmPassword = "";
-    string fullName = "", facebookUrl = "", school = "", messageToAdmin = "";
+    string fullName = "", facebookUrl = "", messageToAdmin = "";
+    Guid schoolId;
     bool loading = false;
     bool showPassword = false;
     string? errorMessage;
+    List<SchoolDto> Schools = new();
 
     InputType passwordInputType => showPassword ? InputType.Text : InputType.Password;
     string passwordIcon => showPassword
@@ -155,6 +156,15 @@
         : Icons.Material.Filled.Visibility;
 
     void TogglePassword() => showPassword = !showPassword;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var schools = await Http.GetFromJsonAsync<List<SchoolDto>>("/api/v1/schools");
+        if(schools != null)
+            Schools = schools;
+
+        schoolId = Schools.FirstOrDefault().Id;
+    }
 
     public async Task HandleRegister()
     {
@@ -168,15 +178,17 @@
 
         loading = true;
 
-        var response = await Http.PostAsJsonAsync("/api/v1/auth/register", new
-        {
-            username,
-            password,
-            fullName,
-            facebookUrl,
-            school,
-            messageToAdmin
-        });
+        var payload = new RegisterRequest
+            {
+                Username = username,
+                FacebookUrl = facebookUrl,
+                FullName = fullName,
+                MessageToAdmin = messageToAdmin,
+                Password = password,
+                SchoolId = schoolId
+            };
+
+        var response = await Http.PostAsJsonAsync("/api/v1/auth/register", payload);
 
         if (response.IsSuccessStatusCode)
         {

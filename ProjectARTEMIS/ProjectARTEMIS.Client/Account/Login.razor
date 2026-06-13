@@ -87,12 +87,12 @@
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-            // await AuthProvider.MarkUserAsAuthenticated(result!.Token);
-            Nav.NavigateTo("/dashboard");
+            await AuthProvider.MarkUserAsAuthenticated(result!.Token);
+            Nav.NavigateTo("/");
         }
         else
         {
-            // handle error — e.g. show a MudSnackbar
+            
         }
 
         loading = false;

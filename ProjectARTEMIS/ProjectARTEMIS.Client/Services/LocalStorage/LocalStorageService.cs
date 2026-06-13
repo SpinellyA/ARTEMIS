@@ -66,4 +66,16 @@ public class LocalStorageService : ILocalStorageService
         if (_isPrerendering) return null;
         return await _jsRuntime.InvokeAsync<string?>("localStorage.key", index);
     }
+
+    public async ValueTask SetRawAsync(string key, string value)
+    {
+        if (_isPrerendering) return;
+        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
+    }
+
+    public async ValueTask<string?> GetRawAsync(string key)
+    {
+        if (_isPrerendering) return null;
+        return await _jsRuntime.InvokeAsync<string?>("localStorage.getItem", key);
+    }
 }

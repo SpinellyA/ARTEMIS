@@ -17,7 +17,7 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var token = await _localStorage.GetAsync<string>("token");
+        var token = await _localStorage.GetRawAsync("token");
 
         if (string.IsNullOrWhiteSpace(token))
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -32,7 +32,7 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
 
     public async Task MarkUserAsAuthenticated(string token)
     {
-        await _localStorage.SetAsync("token", token);
+        await _localStorage.SetRawAsync("token", token);
         var claims = ParseClaimsFromJwt(token);
         var identity = new ClaimsIdentity(claims, "jwt");
         NotifyAuthenticationStateChanged(
