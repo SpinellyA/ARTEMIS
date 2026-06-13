@@ -6,11 +6,11 @@
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
 
-    <MudPaper Elevation="0" Style="background: #3C3489; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
-        <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="font-size: 40px; color: #AFA9EC;" />
+    <MudPaper Elevation="0" Style="background: linear-gradient(130deg, #000000, #1B5E20, #4CAF50); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
+        <MudIcon Icon="@Icons.Material.Filled.ShieldMoon" Style="font-size: 40px; color: #FFFFFF;" />
         <div>
-            <MudText Typo="Typo.h6" Style="color: #CECBF6; margin: 0;">Project Artemis</MudText>
-            <MudText Typo="Typo.caption" Style="color: #AFA9EC;">Create your account to get started</MudText>
+            <MudText Typo="Typo.h6" Style="color: #FFFFFF; margin: 0;">Project Artemis</MudText>
+            <MudText Typo="Typo.caption" Style="color: #FFFFFF;">Create your account to get started</MudText>
         </div>
     </MudPaper>
 
@@ -20,7 +20,7 @@
     }
 
     <MudPaper Outlined Class="pa-6 mb-4" Style="border-radius: 12px;">
-        <MudText Typo="Typo.overline" Style="color: #7F77DD;" Class="mb-4 d-flex align-center gap-2">
+        <MudText font-size: 1rem; Class="mb-4 d-flex align-center gap-2">
             <MudIcon Icon="@Icons.Material.Outlined.Lock" Size="Size.Small" /> Account credentials
         </MudText>
 
@@ -54,7 +54,7 @@
     </MudPaper>
 
     <MudPaper Outlined Class="pa-6 mb-4" Style="border-radius: 12px;">
-        <MudText Typo="Typo.overline" Style="color: #7F77DD;" Class="mb-4 d-flex align-center gap-2">
+        <MudText font-size: 1rem; Class="mb-4 d-flex align-center gap-2">
             <MudIcon Icon="@Icons.Material.Outlined.Person" Size="Size.Small" /> Tell us about you
         </MudText>
 
@@ -136,7 +136,7 @@
         @(loading ? "Creating account…" : "Create account")
     </MudButton>
 
-    <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-3" Color="Color.Secondary">
+    <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-3">
         Already have an account? <MudLink Href="/login">Sign in</MudLink>
     </MudText>
 
