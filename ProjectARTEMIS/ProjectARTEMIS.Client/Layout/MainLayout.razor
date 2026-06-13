@@ -1,9 +1,12 @@
-﻿@inherits LayoutComponentBase
+﻿@using ProjectARTEMIS.Client.Account
+@inherits LayoutComponentBase
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<AuthorizeView>
+    <Authorized>
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
@@ -16,10 +19,19 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent Class="pt-16 pa-4">
-        @Body
+
+            @Body
+        
     </MudMainContent>
 </MudLayout>
-
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+    <Authorizing>
+        <FullScreenLoading />
+    </Authorizing>
+</AuthorizeView>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

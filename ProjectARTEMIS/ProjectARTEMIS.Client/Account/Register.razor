@@ -93,6 +93,8 @@
         <MudText Typo="Typo.body2" Class="mb-3">
             Artemis aims to connect students all over Cebu through Minecraft. By joining this server, we hope that you agree to have your
             profile and socials be accessible to ONLY players of the server.
+            <br/>
+            This also prevents any griefing, disruprive behavior in the server. Everyone knows who you are in there.
         </MudText>
 
         <MudDivider Light="true" Class="my-2" />
@@ -102,7 +104,9 @@
                 <MudText Typo="Typo.caption" Color="Color.Primary"><b>What if I sell your data?</b></MudText>
                 <MudText Typo="Typo.caption" Component="p">
                     Okay, there's only going to be like 20-40 of you guys here. I don't really see anybody buying data
-                    of "cebu students playing minecraft" + your data is public anyways (these are just your social media accounts).
+                    of "cebu students playing minecraft".
+                    <br/>
+                    On top of that, we only collect data that you CHOOSE to make public.
                 </MudText>
             </MudItem>
 
@@ -152,7 +156,7 @@
 
     void TogglePassword() => showPassword = !showPassword;
 
-    async Task HandleRegister()
+    public async Task HandleRegister()
     {
         errorMessage = null;
 
