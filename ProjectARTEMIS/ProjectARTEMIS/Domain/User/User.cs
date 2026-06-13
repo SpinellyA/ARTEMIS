@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
         public Guid Id { get; private set; }
         public string Username { get; private set; } = string.Empty;
         public string PasswordHash { get; private set; } = string.Empty;
+        public bool IsAdmin { get; private set; } = false;
         private User()
         {
              
