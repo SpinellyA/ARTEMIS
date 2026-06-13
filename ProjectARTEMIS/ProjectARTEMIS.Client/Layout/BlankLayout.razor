@@ -3,12 +3,9 @@
 <MudThemeProvider Theme="_currentTheme" IsDarkMode="true"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
-<MudLayout>
-    <MudMainContent>
-        @Body
-    </MudMainContent>
-</MudLayout>
+@Body
 
 @code {
     private MudTheme _currentTheme = new MudTheme()

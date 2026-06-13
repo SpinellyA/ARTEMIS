@@ -40,8 +40,6 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
-// For Blazor Server
-builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 
