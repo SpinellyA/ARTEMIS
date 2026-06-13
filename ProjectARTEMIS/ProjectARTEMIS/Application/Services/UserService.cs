@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BCrypt;
 using Microsoft.AspNetCore.Identity.Data;
+using System.Data;
 public class UserService
 {
     private readonly IUnitOfWork _uow;
@@ -22,26 +23,30 @@ public class UserService
         if (existingUser != null)
             throw new ApplicationException("This username is already taken!");
 
-        var hashedPassword = _hasher.HashPassword(request.Password);
-        var user = User.Create(request.Username, hashedPassword);
+        await _uow.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
-        _uow.Users.Add(user);
-
-        var whitelistRequest = WhitelistRequest.Create(user.Id, request.SchoolId, request.FullName,
-            request.FacebookUrl, request.MessageToAdmin);
-
-        _uow.WhitelistRequests.Add(whitelistRequest);
-
-        await _uow.SaveChangesAsync();
-
-        var token = _tokenGenerator.GenerateToken(user);
-
-
-
-        return new LoginDto
+        try
         {
-            Token = token
-        };
+            var hashedPassword = _hasher.HashPassword(request.Password);
+            var user = User.Create(request.Username, hashedPassword);
+            _uow.Users.Add(user);
+
+            var whitelistRequest = WhitelistRequest.Create(user.Id, request.SchoolId, request.FullName,
+                request.FacebookUrl, request.MessageToAdmin);
+            _uow.WhitelistRequests.Add(whitelistRequest);
+
+            await _uow.SaveChangesAsync();
+            await _uow.CommitAsync();
+
+            var token = _tokenGenerator.GenerateToken(user);
+
+            return new LoginDto { Token = token };
+        }
+        catch
+        {
+            await _uow.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<LoginDto> LoginAsync(LoginRequest request)
